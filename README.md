@@ -1,6 +1,6 @@
 # Elaxtic
 
-**TODO: Add description**
+ElasticSearch client for Elixir and Ecto driver.
 
 ## Installation
 
