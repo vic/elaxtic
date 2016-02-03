@@ -1,0 +1,2 @@
+defmodule Elaxtic do
+end
