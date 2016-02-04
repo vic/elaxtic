@@ -11,7 +11,7 @@ defmodule Elaxtic.Document do
   defmacro __using__(opts) do
     quote do
       @elastic unquote(opts)
-      def elastic, do: opts
+      def elastic, do: @elastic
       def elastic(key, v \\ nil), do: Keyword.get(elastic, key, v)
     end
   end

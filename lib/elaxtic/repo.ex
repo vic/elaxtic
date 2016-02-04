@@ -5,7 +5,7 @@ defmodule Elaxtic.Repo do
       @elastic unquote(opts)
       Module.register_attribute __MODULE__, :documents, accumulate: true, persist: true
 
-      def elastic, do: opts
+      def elastic, do: @elastic
       def elastic(key, v \\ nil), do: Keyword.get(elastic, key, v)
 
       defmodule Index do
