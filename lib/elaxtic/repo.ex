@@ -1,10 +1,11 @@
 defmodule Elaxtic.Repo do
 
-  defmacro __using__(opts) when is_list(opts) do
+  defmacro __using__(opts) do
     quote do
+      @elastic unquote(opts)
       Module.register_attribute __MODULE__, :documents, accumulate: true, persist: true
 
-      def elastic, do: unquote(opts)
+      def elastic, do: opts
       def elastic(key, v \\ nil), do: Keyword.get(elastic, key, v)
 
       defmodule Index do

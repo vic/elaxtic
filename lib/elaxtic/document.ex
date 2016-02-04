@@ -8,9 +8,10 @@ defmodule Elaxtic.Document do
     ids(hits)
   ]
 
-  defmacro __using__(opts) when is_list(opts) do
+  defmacro __using__(opts) do
     quote do
-      def elastic, do: unquote(opts)
+      @elastic unquote(opts)
+      def elastic, do: opts
       def elastic(key, v \\ nil), do: Keyword.get(elastic, key, v)
     end
   end
