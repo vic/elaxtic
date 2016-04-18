@@ -10,6 +10,10 @@ defmodule Elaxtic.URL do
     [document(repo, type), id] |> Stream.filter(&(&1)) |> join
   end
 
+  def document(repo, type, %{}) do
+    document(repo, type)
+  end
+
   def document(repo, type) when is_atom(type) do
     type(repo, type)
   end
