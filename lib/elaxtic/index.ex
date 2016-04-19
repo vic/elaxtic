@@ -16,7 +16,7 @@ defmodule Elaxtic.Index do
   end
 
   def delete(repo, type) do
-    URL.url(url: repo, index: type)
+    URL.index_url(repo, type)
     |> HTTP.delete
     |> HTTP.response
   end
