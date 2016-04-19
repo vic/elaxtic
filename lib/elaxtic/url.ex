@@ -12,23 +12,10 @@ defmodule Elaxtic.URL do
     url([url: repo, index: {repo, type}, type: type] ++ fragments, query)
   end
 
-  def doc_url(repo, type, data, fragments \\ [], query \\ []) do
-    if id = doc_id(data) do
-      type_url(repo, type, [id] ++ fragments, query)
-    else
-      type_url(repo, type, fragments, query)
-    end
-  end
-
   defp path(fragments) do
     fragments
     |> Stream.map(&elastic_path/1)
     |> Stream.filter(&(&1))
-  end
-
-  defp doc_id(data) do
-    get_in(data, [:id]) || get_in(data, ["id"]) ||
-      get_in(data, [:_id]) || get_in(data, ["_id"])
   end
 
   defp elastic_path(path) when is_binary(path), do: path

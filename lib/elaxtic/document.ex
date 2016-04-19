@@ -15,15 +15,19 @@ defmodule Elaxtic.Document do
     end
   end
 
-  def index(repo, type, data = %{id: id}) do
-    URL.type_url(repo, type, ["#{id}"])
-    |> HTTP.put(type.to_elastic(data))
+  def index(repo, type, data) do
+    index(repo, type, data, id(data))
+  end
+
+  def index(repo, type, data, nil) do
+    URL.type_url(repo, type)
+    |> HTTP.post(source(data))
     |> HTTP.response
   end
 
-  def index(repo, type, data) do
-    URL.type_url(repo, type)
-    |> HTTP.post(data)
+  def index(repo, type, data, id) do
+    URL.type_url(repo, type, [id])
+    |> HTTP.put(source(data))
     |> HTTP.response
   end
 
@@ -33,14 +37,14 @@ defmodule Elaxtic.Document do
     |> HTTP.response
   end
 
-  def ids(repo, []), do: []
-
-  def ids(repo, %{"hits" => %{"hits" => hits}}) do
-    ids(repo, hits)
+  def id(data) do
+    get_in(data, [:id]) || get_in(data, [:_id]) ||
+    if is_map(data) do
+      get_in(data, ["id"]) || get_in(data, ["_id"])
+    end
   end
 
-  def ids(repo, hits)  do
-    hits |> Enum.map(fn %{"_id" => id} -> id end)
-  end
+  def source(%{"_source" => source}), do: source
+  def source(data), do: data
 
 end

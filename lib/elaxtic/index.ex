@@ -7,7 +7,8 @@ defmodule Elaxtic.Index do
     delete(type),
     create(type),
     refresh(type),
-    put_mapping(type)
+    put_mapping(type),
+    put_mapping(type, mapping)
   ]
 
   def reset(repo, type) do
@@ -28,8 +29,12 @@ defmodule Elaxtic.Index do
   end
 
   def put_mapping(repo, type) do
+    put_mapping(repo, type, type.elastic[:mapping])
+  end
+
+  def put_mapping(repo, type, mapping) do
     URL.url(url: repo, index: {repo, type}, _: "_mapping", type: type)
-    |> HTTP.put(get_in(type.elastic, [:mapping]))
+    |> HTTP.put(mapping)
     |> HTTP.response
   end
 

@@ -23,16 +23,4 @@ defmodule Elaxtic.URLTest do
     assert type_url(Repo, Doc) == "http://fake.elastic/foo-bar/moo"
   end
 
-  test "doc_url without id" do
-    assert doc_url(Repo, Doc, %{}) == "http://fake.elastic/foo-bar/moo"
-  end
-
-  test "doc_url with id" do
-    assert doc_url(Repo, Doc, %{id: 1}) == "http://fake.elastic/foo-bar/moo/1"
-  end
-
-  test "doc_url with _id" do
-    assert doc_url(Repo, Doc, %{_id: 1}) == "http://fake.elastic/foo-bar/moo/1"
-  end
-
 end
