@@ -45,6 +45,7 @@ defmodule Elaxtic.Mixfile do
   defp deps do
     [
     {:httpoison, "~> 0.8.0"},
+    {:poison, "~> 2.1.0"},
     {:mix_test_watch, "~> 0.2", only: :dev},
     {:credo, "~> 0.1.9", only: [:dev, :test]},
     ]
