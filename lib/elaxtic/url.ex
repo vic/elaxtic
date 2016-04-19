@@ -1,43 +1,48 @@
 defmodule Elaxtic.URL do
 
-  def index(repo, type) do
-    index = [repo.elastic(:index_prefix), type.elastic(:index)] |>
-      Stream.filter(&(&1)) |> Enum.join("-")
-    [repo.elastic(:url), index] |> join
+  def url(fragments, query \\ []) do
+    path(fragments) |> join(query)
   end
 
-  def document(repo, type, %{id: id}) do
-    [document(repo, type), id] |> Stream.filter(&(&1)) |> join
+  def index_url(repo, type, fragments \\ [], query \\ []) do
+    url([url: repo, index: {repo, type}] ++ fragments, query)
   end
 
-  def document(repo, type, %{}) do
-    document(repo, type)
+  def type_url(repo, type, fragments, query \\ []) do
+    url([url: repo, index: {repo, type}, type: type] ++ fragments, query)
   end
 
-  def document(repo, type) when is_atom(type) do
-    type(repo, type)
+  defp path(fragments) do
+    fragments
+    |> Stream.map(&elastic_path/1)
+    |> Stream.filter(&(&1))
   end
 
-  def type(repo, type) do
-    [index(repo, type), type.elastic(:type)] |> join
+  defp elastic_path(path) when is_binary(path), do: path
+  defp elastic_path({:_, path}) when is_binary(path), do: path
+
+  defp elastic_path({:index, {repo, type}}) do
+    path(index_prefix: repo, index: type) |> Enum.join("-")
   end
 
-  def append(url, parts, query \\ []) do
-    [url, parts] |> List.flatten |> join(query)
+  defp elastic_path({name, module}) when is_atom(module) do
+    elastic_path({name, module.elastic})
   end
 
-  def join(url), do: join(url, [])
-
-  def join(url, query) when is_binary(url) do
-    url <> query_string(query)
+  defp elastic_path({attr, data}) when is_list(attr) do
+    get_in(data, attr)
   end
 
-  def join(paths, query) do
+  defp elastic_path({attr, data}) do
+    get_in(data, [attr])
+  end
+
+  defp join(paths, query) do
     Enum.join(paths, "/") <> query_string(query)
   end
 
-  def query_string([]), do: ""
-  def query_string(query = [_ | _]) do
+  defp query_string([]), do: ""
+  defp query_string(query = [_ | _]) do
     "?" <> Enum.map_join(query, "&", fn {k, v} -> "#{k}=#{v}" end)
   end
 
