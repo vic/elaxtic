@@ -15,9 +15,15 @@ defmodule Elaxtic.Document do
     end
   end
 
+  def index(repo, type, data = %{id: id}) do
+    URL.type_url(repo, type, ["#{id}"])
+    |> HTTP.put(type.to_elastic(data))
+    |> HTTP.response
+  end
+
   def index(repo, type, data) do
-    URL.index_url(repo, type)
-    |> HTTP.post(type.to_elastic(data))
+    URL.type_url(repo, type)
+    |> HTTP.post(data)
     |> HTTP.response
   end
 
